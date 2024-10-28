@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>Source Chain</th>
+            <th>Amount</th>
+            <th>Source Transaction</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Destination Transaction</th>
+            <th>Time Taken</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for op in bridge_ops %}
+        <tr>
+            <td>{{ op.source_tx.chain }}</td>
+            <td>
+                {{ "%.6f"|format(op.source_tx.amount) }} 
+                {{ op.source_tx.asset_name }}
+            </td>
+            <td>
+                {% if op.source_tx.chain == 'Algorand' %}
+                    <a href="{{ explorers[op.source_tx.chain.lower()] }}{{ op.source_tx.txid }}" target="_blank">
+                        {{ op.source_tx.txid[:8] }}...{{ op.source_tx.txid[-8:] }} 🦩
+                    </a>
+                {% else %}
+                    <a href="{{ explorers[op.source_tx.chain.lower()] }}{{ op.source_tx.txid }}" target="_blank">
+                        {{ op.source_tx.txid[:8] }}...{{ op.source_tx.txid[-8:] }}
+                    </a>
+                {% endif %}
+            </td>
+            <td>{{ datetime.fromtimestamp(op.source_tx.timestamp).strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>
+                <span class="bridge-status {{ op.status.lower() }}">
+                    {{ op.status }}
+                </span>
+            </td>
+            <td>
+                {% if op.dest_tx %}
+                    {% if op.dest_tx.chain == 'Algorand' %}
+                        <a href="{{ explorers[op.dest_tx.chain.lower()] }}{{ op.dest_tx.txid }}" target="_blank">
+                            {{ op.dest_tx.txid[:8] }}...{{ op.dest_tx.txid[-8:] }} 🦩
+                        </a>
+                    {% else %}
+                        <a href="{{ explorers[op.dest_tx.chain.lower()] }}{{ op.dest_tx.txid }}" target="_blank">
+                            {{ op.dest_tx.txid[:8] }}...{{ op.dest_tx.txid[-8:] }}
+                        </a>
+                    {% endif %}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                {% if op.time_taken %}
+                    {{ op.time_taken.minutes }}m {{ op.time_taken.seconds }}s
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

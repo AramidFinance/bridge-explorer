@@ -1,0 +1,319 @@
+:root {
+    --primary: #3498db;
+    --bridge-out: #8e44ad;  /* Purple for outgoing bridge transfers */
+    --bridge-in: #2ecc71;   /* Green for incoming */
+    --dark: #2c3e50;
+    --light: #ecf0f1;
+    --gray: #95a5a6;
+    --neon-pink: #ff2b9d;
+    --neon-blue: #00f3ff;
+    --dark-purple: #150b1d;
+    --grid-color: rgba(255, 43, 157, 0.2);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f7fa;
+    color: var(--dark);
+    line-height: 1.6;
+    background-color: var(--dark-purple);
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 20px;
+    background-image: 
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+header {
+    background: white;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+h1 {
+    margin: 0;
+    color: var(--dark);
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink);
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.transactions {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.transactions h2 {
+    padding: 1.5rem;
+    margin: 0;
+    border-bottom: 1px solid var(--light);
+    font-size: 1.4rem;
+    color: var(--dark);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    background: rgba(21, 11, 29, 0.8);
+    backdrop-filter: blur(5px);
+    border: 2px solid var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+th {
+    background: #f8fafc;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray);
+    border-bottom: 2px solid var(--light);
+    background: var(--neon-pink);
+    color: var(--dark-purple);
+    padding: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--light);
+    color: #fff;
+    padding: 12px;
+}
+
+tr:hover {
+    background: #f8fafc;
+    background: rgba(255, 43, 157, 0.1);
+}
+
+tr.incoming td {
+    border-left: 4px solid var(--bridge-in);
+}
+
+tr.outgoing td {
+    border-left: 4px solid var(--bridge-out);
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.type-badge.incoming {
+    background: #e8f8f5;
+    color: var(--bridge-in);
+}
+
+.type-badge.outgoing {
+    background: #f5eef8;  /* Light purple background */
+    color: var(--bridge-out);
+}
+
+.amount {
+    font-family: 'Monaco', monospace;
+    font-weight: 500;
+}
+
+.address {
+    font-family: 'Monaco', monospace;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    border-top: 1px solid var(--light);
+    gap: 1rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    text-decoration: none;
+}
+
+.current-page {
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.bridge-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.complete {
+    background: var(--neon-pink);
+    color: var(--dark-purple);
+}
+
+.pending {
+    background: var(--neon-blue);
+    color: var(--dark-purple);
+}
+
+.failed {
+    background: #ff4444;  /* Red for failed */
+    color: var(--dark-purple);
+}
+
+.reverted {
+    background: #ffaa00;  /* Orange for reverted */
+    color: var(--dark-purple);
+}
+
+/* Glowing effect for headings */
+.glow {
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 5px var(--neon-pink),
+                     0 0 10px var(--neon-pink),
+                     0 0 15px var(--neon-pink);
+    }
+    to {
+        text-shadow: 0 0 10px var(--neon-pink),
+                     0 0 20px var(--neon-pink),
+                     0 0 30px var(--neon-pink);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0;
+    }
+
+    .transactions {
+        margin: 0;
+        border-radius: 0;
+    }
+
+    /* Convert table to cards on mobile */
+    table, thead, tbody, tr, th, td {
+        display: block;
+    }
+
+    thead {
+        display: none; /* Hide table headers on mobile */
+    }
+
+    tr {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: white;
+        border-bottom: 1px solid var(--light);
+        position: relative;
+    }
+
+    tr.incoming {
+        border-left: 4px solid var(--bridge-in);
+    }
+
+    tr.outgoing {
+        border-left: 4px solid var(--bridge-out);
+    }
+
+    td {
+        padding: 0.5rem 0;
+        border: none;
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        align-items: center;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+
+    .type-badge {
+        margin-left: 0;
+    }
+
+    .amount {
+        font-size: 0.9rem;
+        word-break: break-all;
+    }
+
+    .address {
+        font-size: 0.85rem;
+        word-break: break-all;
+    }
+
+    .pagination {
+        padding: 1rem;
+    }
+
+    .chain-badge {
+        margin-left: 0;
+        display: inline-block;
+    }
+}
+
+/* Add these to your existing CSS */
+.chain-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: #edf2f7;
+    color: #4a5568;
+}
+
+.chain-badge.algorand {
+    background: #f0f9ff;
+    color: #0369a1;
+}
+
+.chain-badge.voi {
+    background: #fdf4ff;
+    color: #a21caf;
+}
