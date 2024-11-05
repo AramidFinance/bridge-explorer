@@ -32,7 +32,7 @@
                     </a>
                 {% endif %}
             </td>
-            <td>{{ datetime.fromtimestamp(op.source_tx.timestamp).strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ op.formatted_time }}</td>
             <td>
                 <span class="bridge-status {{ op.status.lower() }}">
                     {{ op.status }}

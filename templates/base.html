@@ -112,5 +112,11 @@
         <h1 class="glow">Aramid Bridge Explorer</h1>
         {% block content %}{% endblock %}
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            fetch(`/set-timezone?timezone=${timezone}`, { method: 'POST' });
+        });
+    </script>
 </body>
 </html>

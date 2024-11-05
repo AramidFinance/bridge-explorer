@@ -23,10 +23,15 @@ body {
     font-family: 'Courier New', monospace;
     margin: 0;
     padding: 20px;
+    height: 100vh; /* Temporarily set a fixed height */
     background-image: 
+        url('/static/images/aramid_bg.webp'), 
+        url('/static/images/aramid_bg.png'), 
         linear-gradient(var(--grid-color) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-    background-size: 30px 30px;
+    background-size: cover, cover, 30px 30px; /* Adjust sizes as needed */
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 header {

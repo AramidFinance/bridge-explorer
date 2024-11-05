@@ -4,6 +4,7 @@ import base64
 import requests
 from functools import lru_cache
 from services.cache import CacheService
+import json
 
 class BaseMonitor:
     def __init__(self, indexer_url, address, chain_name):
@@ -101,7 +102,7 @@ class BaseMonitor:
         
         formatted_txn = {
             'txid': txn['id'],
-            'timestamp': txn['round-time'],
+            'timestamp': datetime.fromtimestamp(txn['round-time']).isoformat(), # Convert to ISO format
             'datetime': datetime.fromtimestamp(txn['round-time']),
             'chain': self.chain_name,
             'amount': amount,
@@ -113,3 +114,13 @@ class BaseMonitor:
             'last-valid': txn.get('last-valid')
         }
         return formatted_txn
+
+    def set_transactions(self, chain_name, transactions):
+        key = f"{chain_name.lower()}_transactions"
+        print(f"Attempting to set key: {key}")
+        print(f"Transactions to set: {transactions}")
+        try:
+            self.redis.setex(key, self.ttl, json.dumps(transactions))
+            print(f"Successfully set key: {key}")
+        except Exception as e:
+            print(f"Error setting key {key}: {e}")

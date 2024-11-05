@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Variable.ttf");
+}
+
+@layer base {
+  html {
+    font-family: "Satoshi", sans-serif;
+  }
+}
+
+@layer components {
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus {
+    transition:
+      background-color 900000s 0s,
+      color 600000s 0s;
+  }
+  /* Scroll thumb styles */
+  body::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  body::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      97.11deg,
+      rgba(116, 7, 176, 0.9) 3.25%,
+      rgba(67, 7, 165, 0.9) 94.9%
+    );
+    border-radius: 1rem;
+  }
+  body::-webkit-scrollbar-thumb:active {
+    background-color: #131314;
+  }
+  body::-webkit-scrollbar-thumb:hover {
+    background: #3b3b46;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+
+  /* Scroll track styles (Background) */
+  body::-webkit-scrollbar-track {
+    background: #131314;
+  }
+  body::-webkit-scrollbar-track:hover,
+  body::-webkit-scrollbar-track:active {
+    background: #131314;
+  }
+}
