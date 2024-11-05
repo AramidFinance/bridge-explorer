@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<table>
+<h1>Aramid Bridge Explorer</h1>
+<table >
     <thead>
         <tr>
             <th>Source Chain</th>
@@ -22,15 +23,10 @@
                 {{ op.source_tx.asset_name }}
             </td>
             <td>
-                {% if op.source_tx.chain == 'Algorand' %}
-                    <a href="{{ explorers[op.source_tx.chain.lower()] }}{{ op.source_tx.txid }}" target="_blank">
-                        {{ op.source_tx.txid[:8] }}...{{ op.source_tx.txid[-8:] }} 🦩
-                    </a>
-                {% else %}
-                    <a href="{{ explorers[op.source_tx.chain.lower()] }}{{ op.source_tx.txid }}" target="_blank">
-                        {{ op.source_tx.txid[:8] }}...{{ op.source_tx.txid[-8:] }}
-                    </a>
-                {% endif %}
+                <a href="{{ explorers[op.source_tx.chain.lower()] }}{{ op.source_tx.txid }}" target="_blank">
+                    {{ op.source_tx.txid[:8] }}...{{ op.source_tx.txid[-8:] }}
+                    {% if op.source_tx.chain == 'Algorand' %} 🦩 {% endif %}
+                </a>
             </td>
             <td>{{ op.formatted_time }}</td>
             <td>
@@ -40,15 +36,10 @@
             </td>
             <td>
                 {% if op.dest_tx %}
-                    {% if op.dest_tx.chain == 'Algorand' %}
-                        <a href="{{ explorers[op.dest_tx.chain.lower()] }}{{ op.dest_tx.txid }}" target="_blank">
-                            {{ op.dest_tx.txid[:8] }}...{{ op.dest_tx.txid[-8:] }} 🦩
-                        </a>
-                    {% else %}
-                        <a href="{{ explorers[op.dest_tx.chain.lower()] }}{{ op.dest_tx.txid }}" target="_blank">
-                            {{ op.dest_tx.txid[:8] }}...{{ op.dest_tx.txid[-8:] }}
-                        </a>
-                    {% endif %}
+                    <a href="{{ explorers[op.dest_tx.chain.lower()] }}{{ op.dest_tx.txid }}" target="_blank">
+                        {{ op.dest_tx.txid[:8] }}...{{ op.dest_tx.txid[-8:] }}
+                        {% if op.dest_tx.chain == 'Algorand' %} 🦩 {% endif %}
+                    </a>
                 {% else %}
                     -
                 {% endif %}
@@ -64,4 +55,19 @@
         {% endfor %}
     </tbody>
 </table>
+
+<div class="pagination">
+    {% if pagination.has_prev %}
+        <a href="?page={{ pagination.prev_page }}" class="btn">Previous</a>
+    {% endif %}
+    
+    <span class="current-page">
+        Page {{ pagination.current_page }} of {{ pagination.total_pages }}
+    </span>
+    
+    {% if pagination.has_next %}
+        <a href="?page={{ pagination.next_page }}" class="btn">Next</a>
+    {% endif %}
+</div>
+
 {% endblock %}

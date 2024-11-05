@@ -161,27 +161,48 @@ a:hover {
     justify-content: center;
     align-items: center;
     padding: 1.5rem;
-    border-top: 1px solid var(--light);
     gap: 1rem;
+    margin-top: 2rem;
 }
 
-.btn {
+.pagination .btn {
     padding: 0.5rem 1rem;
-    background: var(--primary);
-    color: white;
+    background: var(--neon-blue);
+    color: var(--dark-purple);
     border-radius: 4px;
     font-weight: 500;
-    transition: opacity 0.2s;
-}
-
-.btn:hover {
-    opacity: 0.9;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
     text-decoration: none;
 }
 
-.current-page {
-    color: var(--gray);
+.pagination .btn:hover {
+    background: var(--neon-pink);
+    box-shadow: 0 0 15px var(--neon-pink);
+    transform: translateY(-2px);
+}
+
+.pagination .current-page {
+    color: var(--neon-pink);
     font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--neon-pink);
+    border-radius: 4px;
+    background: rgba(255, 43, 157, 0.1);
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        padding: 1rem;
+    }
+    
+    .pagination .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
 }
 
 .bridge-status {

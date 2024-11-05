@@ -13,7 +13,7 @@ class BaseMonitor:
         self.chain_name = chain_name
         self.cache = CacheService()
         
-    def get_transactions(self, limit=50):
+    def get_transactions(self, limit=25, offset=0):
         # Try to get from cache first
         cached_txns = self.cache.get_transactions(self.chain_name)
         if cached_txns and self.cache.is_cache_fresh(self.chain_name):
@@ -27,7 +27,8 @@ class BaseMonitor:
                 f"{self.indexer_url}/v2/transactions",
                 params={
                     "address": self.address,
-                    "limit": limit
+                    "limit": limit,
+                    "offset": offset
                 }
             )
             if response.status_code == 200:

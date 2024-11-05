@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, Query, Form
+from fastapi_pagination import Page, paginate, Params
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -115,19 +116,38 @@ def organize_bridge_operations(algo_txns: list, voi_txns: list) -> list:
     return sorted(bridge_ops, key=lambda x: datetime.fromisoformat(x['source_tx']['timestamp']).astimezone(DEFAULT_TIMEZONE), reverse=True)
 
 @app.get("/", response_class=HTMLResponse)
-async def get_transactions(request: Request):
-    algo_txns = algo_monitor.get_transactions(limit=50)
-    voi_txns = voi_monitor.get_transactions(limit=50)
+async def get_transactions(
+    request: Request,
+    page: int = Query(1, ge=1),
+    size: int = Query(10, ge=1, le=100)
+):
+    algo_txns = algo_monitor.get_transactions(limit=100)  # Get more to handle matching
+    voi_txns = voi_monitor.get_transactions(limit=100)
     
     bridge_ops = organize_bridge_operations(algo_txns, voi_txns)
+    
+    # Manual pagination
+    start_idx = (page - 1) * size
+    end_idx = start_idx + size
+    paginated_ops = bridge_ops[start_idx:end_idx]
+    total = len(bridge_ops)
+    total_pages = (total + size - 1) // size
     
     return templates.TemplateResponse(
         "transactions.html", 
         {
             "request": request, 
-            "bridge_ops": bridge_ops,
+            "bridge_ops": paginated_ops,
             "explorers": EXPLORERS,
             "datetime": datetime,
-            "default_timezone": DEFAULT_TIMEZONE.zone  # Pass the timezone name
+            "default_timezone": DEFAULT_TIMEZONE.zone,
+            "pagination": {
+                "current_page": page,
+                "total_pages": total_pages,
+                "has_next": page < total_pages,
+                "has_prev": page > 1,
+                "next_page": page + 1 if page < total_pages else None,
+                "prev_page": page - 1 if page > 1 else None
+            }
         }
     )
