@@ -3,11 +3,64 @@
 <head>
     <title>Aramid Bridge Explorer</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-container">
+                <a href="/">
+                    <img src="{{ url_for('static', path='/images/aramid-logo.svg') }}" 
+                         alt="Aramid Finance" 
+                         class="logo"
+                         width="206" 
+                         height="64">
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="https://docs.aramid.finance" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="nav-link">Docs</a>
+                <a href="https://app.aramid.finance" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="launch-btn">
+                    <span>Launch App</span>
+                </a>
+            </div>
+        </div>
+    </header>
     <div class="container">
-        <h1>Aramid Bridge Explorer</h1>
         {% block content %}{% endblock %}
     </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <a href="https://twitter.com/AramidFinance" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="footer-link">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://discord.gg/gAku95M5TB" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="footer-link">
+                <i class="fab fa-discord"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/aramid-finance" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="footer-link">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/AramidFinance" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="footer-link">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </footer>
 </body>
 </html>
