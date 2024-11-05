@@ -2,121 +2,12 @@
 <html>
 <head>
     <title>Aramid Bridge Explorer</title>
-    <style>
-        :root {
-            --neon-pink: #ff2b9d;
-            --neon-blue: #00f3ff;
-            --dark-purple: #150b1d;
-            --grid-color: rgba(255, 43, 157, 0.2);
-        }
-
-        body {
-            background-color: var(--dark-purple);
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            margin: 0;
-            padding: 20px;
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-            font-size: 2.5em;
-            margin-bottom: 40px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(21, 11, 29, 0.8);
-            backdrop-filter: blur(5px);
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
-        }
-
-        th {
-            background: var(--neon-pink);
-            color: var(--dark-purple);
-            padding: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid var(--neon-blue);
-            color: #fff;
-        }
-
-        tr:hover {
-            background: rgba(255, 43, 157, 0.1);
-        }
-
-        a {
-            color: var(--neon-blue);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        a:hover {
-            text-shadow: 0 0 8px var(--neon-blue);
-        }
-
-        .bridge-status {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .bridge-complete {
-            background: var(--neon-pink);
-            color: var(--dark-purple);
-        }
-
-        .single-chain {
-            background: var(--neon-blue);
-            color: var(--dark-purple);
-        }
-
-        /* Glowing effect for headings */
-        .glow {
-            animation: glow 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 5px var(--neon-pink),
-                           0 0 10px var(--neon-pink),
-                           0 0 15px var(--neon-pink);
-            }
-            to {
-                text-shadow: 0 0 10px var(--neon-pink),
-                           0 0 20px var(--neon-pink),
-                           0 0 30px var(--neon-pink);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1 class="glow">Aramid Bridge Explorer</h1>
+        <h1>Aramid Bridge Explorer</h1>
         {% block content %}{% endblock %}
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            fetch(`/set-timezone?timezone=${timezone}`, { method: 'POST' });
-        });
-    </script>
 </body>
 </html>
