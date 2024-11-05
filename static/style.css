@@ -374,4 +374,18 @@ thead {
 
 .amount {
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.asset-name {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.fee {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    margin-top: 4px;
 }

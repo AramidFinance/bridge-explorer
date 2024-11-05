@@ -23,7 +23,9 @@
                 {% endif %}
             </td>
             <td>
-                <div class="amount">{{ op.formatted_amount }}</div>
+                <div class="amount">
+                    {{ op.source_tx.amount }} {{ op.source_tx.asset_name }}
+                </div>
                 {% if op.source_tx and op.source_tx.note %}
                     <div class="fee small text-muted">Fee: {{ get_fee_from_note(op.source_tx.note) }}</div>
                 {% endif %}
