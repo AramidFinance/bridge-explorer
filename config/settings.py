@@ -10,6 +10,7 @@ CACHE_TTL = int(os.getenv('CACHE_TTL', 300))  # 5 minutes
 # Chain settings
 ALGORAND_INDEXER_URL = os.getenv('ALGORAND_INDEXER_URL', 'https://mainnet-idx.algonode.cloud')
 VOI_INDEXER_URL = os.getenv('VOI_INDEXER_URL', 'https://mainnet-idx.voi.nodely.dev')
+ARAMID_INDEXER_URL = os.getenv('ARAMID_INDEXER_URL','https://aramidindexer.de-k1.a-wallet.net')
 
 # VOI endpoints - updated to use the correct mainnet indexer
 VOI_NODE_URL = "https://mainnet-api.voi.nodely.dev"

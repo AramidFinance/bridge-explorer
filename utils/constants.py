@@ -8,7 +8,8 @@ POLL_INTERVAL = 5
 # Explorer URLs
 EXPLORERS = {
     "algorand": "https://algoexplorer.io/tx/",
-    "voi": "https://explorer.voi.network/explorer/transaction/"  # Updated VOI explorer URL
+    "voi": "https://explorer.voi.network/explorer/transaction/",  # Updated VOI explorer URL
+    "aramid": None  # No explorer yet
 }
 
 # Transaction types

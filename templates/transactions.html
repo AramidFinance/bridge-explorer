@@ -4,43 +4,68 @@
 <table>
     <thead>
         <tr>
-            <th>Source Chain</th>
+            <th>Route</th>
             <th>Amount</th>
-            <th>Source Transaction</th>
+            <th>Transactions</th>
             <th>Time</th>
             <th>Status</th>
-            <th>Destination Transaction</th>
             <th>Time Taken</th>
         </tr>
     </thead>
     <tbody>
         {% for op in bridge_ops %}
         <tr>
-            <td>{{ op.source_tx.chain }}</td>
             <td>
-                {{ "%.6f"|format(op.source_tx.amount) }} 
-                {{ op.source_tx.asset_name }}
+                {% if op.dest_tx %}
+                    {{ op.source_tx.chain }} → {{ op.dest_tx.chain }}
+                {% else %}
+                    {{ op.source_tx.chain }} → Pending
+                {% endif %}
             </td>
             <td>
-                <a href="{{ explorers[op.source_tx.chain.lower()] }}{{ op.source_tx.txid }}" target="_blank">
-                    {{ op.source_tx.txid[:8] }}...{{ op.source_tx.txid[-8:] }}
-                    {% if op.source_tx.chain == 'Algorand' %} 🦩 {% endif %}
-                </a>
+                <div class="amount">{{ op.formatted_amount }}</div>
+                {% if op.source_tx and op.source_tx.note %}
+                    <div class="fee small text-muted">Fee: {{ get_fee_from_note(op.source_tx.note) }}</div>
+                {% endif %}
             </td>
-            <td>{{ op.formatted_time }}</td>
+            <td class="transactions-cell">
+                <div class="transaction primary">
+                    {% if explorers[op.source_tx.chain.lower()] %}
+                        <a href="{{ explorers[op.source_tx.chain.lower()] }}{{ op.source_tx.txid }}" target="_blank">
+                            {{ op.source_tx.txid[:8] }}...{{ op.source_tx.txid[-8:] }}
+                            {% if op.source_tx.chain == 'Algorand' %} 🦩 {% endif %}
+                        </a>
+                    {% else %}
+                        <span class="txid">{{ op.source_tx.txid[:8] }}...{{ op.source_tx.txid[-8:] }}</span>
+                    {% endif %}
+                </div>
+                {% if op.dest_tx %}
+                <div class="transaction secondary">
+                    {% if explorers[op.dest_tx.chain.lower()] %}
+                        <a href="{{ explorers[op.dest_tx.chain.lower()] }}{{ op.dest_tx.txid }}" target="_blank">
+                            {{ op.dest_tx.txid[:8] }}...{{ op.dest_tx.txid[-8:] }}
+                            {% if op.dest_tx.chain == 'Algorand' %} 🦩 {% endif %}
+                        </a>
+                    {% else %}
+                        <span class="txid">{{ op.dest_tx.txid[:8] }}...{{ op.dest_tx.txid[-8:] }}</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </td>
+            <td>
+                {{ op.formatted_time }}
+                <div class="time-ago" data-timestamp="{{ op.source_tx.timestamp }}">
+                    {{ get_relative_time(op.source_tx.timestamp) }}
+                </div>
+            </td>
             <td>
                 <span class="bridge-status {{ op.status.lower() }}">
                     {{ op.status }}
                 </span>
-            </td>
-            <td>
-                {% if op.dest_tx %}
-                    <a href="{{ explorers[op.dest_tx.chain.lower()] }}{{ op.dest_tx.txid }}" target="_blank">
-                        {{ op.dest_tx.txid[:8] }}...{{ op.dest_tx.txid[-8:] }}
-                        {% if op.dest_tx.chain == 'Algorand' %} 🦩 {% endif %}
-                    </a>
-                {% else %}
-                    -
+                {% if op.aramid_tx %}
+                <span class="aramid-tx">
+                    🔗 {{ op.aramid_tx.txid[:8] }}...{{ op.aramid_tx.txid[-8:] }}
+                </span>
                 {% endif %}
             </td>
             <td>

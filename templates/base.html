@@ -62,5 +62,36 @@
             </a>
         </div>
     </footer>
+    <script>
+    function updateRelativeTimes() {
+        const timeElements = document.querySelectorAll('.time-ago');
+        timeElements.forEach(element => {
+            const timestamp = element.getAttribute('data-timestamp');
+            if (!timestamp) return;
+            
+            const now = new Date();
+            const txTime = new Date(timestamp);
+            const diffSeconds = Math.floor((now - txTime) / 1000);
+            
+            let timeAgo;
+            if (diffSeconds < 60) {
+                timeAgo = `${diffSeconds}s ago`;
+            } else if (diffSeconds < 3600) {
+                timeAgo = `${Math.floor(diffSeconds/60)}m ago`;
+            } else if (diffSeconds < 86400) {
+                timeAgo = `${Math.floor(diffSeconds/3600)}h ago`;
+            } else {
+                timeAgo = `${Math.floor(diffSeconds/86400)}d ago`;
+            }
+            
+            element.textContent = timeAgo;
+        });
+    }
+
+    // Update times every 30 seconds instead of every minute for more accuracy
+    setInterval(updateRelativeTimes, 30000);
+    // Initial update
+    updateRelativeTimes();
+    </script>
 </body>
 </html>

@@ -101,6 +101,9 @@ class BaseMonitor:
         # Add debug print
         print(f"Raw transaction rounds: {txn.get('confirmed-round')}, {txn.get('last-valid')}")
         
+        # Add fee information
+        fee = txn.get('fee', 0) / 1_000_000  # Convert from microalgos to algos
+        
         formatted_txn = {
             'txid': txn['id'],
             'timestamp': datetime.fromtimestamp(txn['round-time']).isoformat(), # Convert to ISO format
@@ -110,6 +113,7 @@ class BaseMonitor:
             'asset_id': asset_id,
             'asset_name': asset_name,
             'note': note,
+            'fee': fee,  # Add fee to the formatted transaction
             # Make sure we're getting these values correctly
             'confirmed-round': txn.get('confirmed-round'),
             'last-valid': txn.get('last-valid')

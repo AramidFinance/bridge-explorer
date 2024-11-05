@@ -336,3 +336,42 @@ thead {
 .container {
     padding-bottom: 4rem;
 }
+
+/* Add styling for Aramid transactions */
+.txid {
+    color: var(--text-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(116, 7, 176, 0.1);
+}
+
+/* Optional: Add specific styling for Aramid chain badges */
+.chain-badge.aramid {
+    background: linear-gradient(97.11deg, rgba(116, 7, 176, 0.9) 3.25%, rgba(67, 7, 165, 0.9) 94.9%);
+}
+
+.aramid-tx {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    padding: 4px 8px;
+    background: rgba(116, 7, 176, 0.1);
+    border-radius: 4px;
+}
+
+.time-ago {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.fee {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 2px;
+}
+
+.amount {
+    font-weight: 500;
+}
