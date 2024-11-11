@@ -15,7 +15,7 @@
     <tbody>
         {% for op in bridge_ops %}
         <tr>
-            <td>
+            <td title="{{ op.note }}">
                 {% if op.dest_tx %}
                     {{ op.source_tx.chain }} → {{ op.dest_tx.chain }}
                 {% else %}

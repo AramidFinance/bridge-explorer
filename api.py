@@ -66,14 +66,24 @@ def organize_bridge_operations(algo_txns: list, voi_txns: list, aramid_txns: lis
     TIME_WINDOW = timedelta(minutes=30)
     bridge_ops = []
     matched_txids = set()
+    matched_txids_resp = []
+    matching_txs= []
 
     # Sort all transactions by timestamp
     all_txns = sorted(algo_txns + voi_txns, key=lambda x: datetime.fromisoformat(x['timestamp']))
 
     # Process each transaction
     for tx in all_txns:
-        if tx['txid'] in matched_txids:
-            continue
+        if tx['note'].startswith("aramid-confirm/v1:j"):
+            bridgedResponse = json.loads(tx['note'].removeprefix("aramid-confirm/v1:j"))
+            matched_txids_resp[bridgedResponse['sourceTxId']] = bridgedResponse
+            matching_txs[bridgedResponse['sourceTxId']] = tx
+
+        if not tx['note'].startswith("aramid-transfer/v1:j"):
+            continue  # Skip to the next item in the loop
+        trimmed_note = tx['note'].removeprefix("aramid-transfer/v1:j")
+
+        bridgeOrder = json.loads(trimmed_note)
 
         tx_time = datetime.fromisoformat(tx['timestamp'])
         
@@ -81,28 +91,28 @@ def organize_bridge_operations(algo_txns: list, voi_txns: list, aramid_txns: lis
         matching_tx = None
         aramid_tx = None
 
-        # Find matching transaction within time window
-        for other_tx in all_txns:
-            if other_tx['txid'] in matched_txids:
-                continue
-            if other_tx['chain'] == tx['chain']:  # Must be from different chain
-                continue
+        # # Find matching transaction within time window
+        # for other_tx in all_txns:
+        #     if other_tx['txid'] in matched_txids:
+        #         continue
+        #     if other_tx['chain'] == tx['chain']:  # Must be from different chain
+        #         continue
                 
-            other_time = datetime.fromisoformat(other_tx['timestamp'])
-            time_diff = abs(other_time - tx_time)
+        #     other_time = datetime.fromisoformat(other_tx['timestamp'])
+        #     time_diff = abs(other_time - tx_time)
             
-            if time_diff <= TIME_WINDOW:
-                matching_tx = other_tx
-                matched_txids.add(other_tx['txid'])
+        #     if time_diff <= TIME_WINDOW:
+        #         matching_tx = other_tx
+        #         matched_txids.add(other_tx['txid'])
                 
-                # Look for corresponding Aramid transaction
-                for a_tx in aramid_txns:
-                    a_time = datetime.fromisoformat(a_tx['timestamp'])
-                    if min(tx_time, other_time) <= a_time <= max(tx_time, other_time):
-                        aramid_tx = a_tx
-                        break
-                break
-
+        #         # Look for corresponding Aramid transaction
+        #         for a_tx in aramid_txns:
+        #             a_time = datetime.fromisoformat(a_tx['timestamp'])
+        #             if min(tx_time, other_time) <= a_time <= max(tx_time, other_time):
+        #                 aramid_tx = a_tx
+        #                 break
+        #         break
+        matching_tx = matching_txs[tx['txid']]
         if matching_tx:
             # Determine source and destination based on timestamp
             if tx_time < datetime.fromisoformat(matching_tx['timestamp']):
@@ -113,7 +123,11 @@ def organize_bridge_operations(algo_txns: list, voi_txns: list, aramid_txns: lis
                 dest_tx = tx
 
             bridge_ops.append({
+                "bridge_order": bridgeOrder,
+                "bridged_info": matched_txids_resp[tx['txid']],
                 'source_tx': source_tx,
+                'bridged_tx': matching_tx,
+                'note': tx['note'],
                 'dest_tx': dest_tx,
                 'aramid_tx': aramid_tx,
                 'status': 'Complete',
@@ -127,7 +141,11 @@ def organize_bridge_operations(algo_txns: list, voi_txns: list, aramid_txns: lis
             })
         else:
             bridge_ops.append({
+                "bridge_order": bridgeOrder,
+                "bridged_info": None,
                 'source_tx': tx,
+                'bridged_tx': None,
+                'note': tx['note'],
                 'dest_tx': None,
                 'aramid_tx': None,
                 'status': 'Pending',
@@ -141,11 +159,11 @@ def organize_bridge_operations(algo_txns: list, voi_txns: list, aramid_txns: lis
 async def get_transactions(
     request: Request,
     page: int = Query(1, ge=1),
-    size: int = Query(30, ge=1, le=100)
+    size: int = Query(30, ge=1, le=1000)
 ):
-    algo_txns = algo_monitor.get_transactions(limit=100)
-    voi_txns = voi_monitor.get_transactions(limit=100)
-    aramid_txns = aramid_monitor.get_transactions(limit=100)
+    algo_txns = algo_monitor.get_transactions(limit=1000)
+    voi_txns = voi_monitor.get_transactions(limit=1000)
+    aramid_txns = aramid_monitor.get_transactions(limit=1000)
     
     bridge_ops = organize_bridge_operations(algo_txns, voi_txns, aramid_txns)
     
