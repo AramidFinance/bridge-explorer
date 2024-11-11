@@ -66,92 +66,105 @@ def organize_bridge_operations(algo_txns: list, voi_txns: list, aramid_txns: lis
     TIME_WINDOW = timedelta(minutes=30)
     bridge_ops = []
     matched_txids = set()
-    matched_txids_resp = []
-    matching_txs= []
+    matched_txids_resp = {}
+    matching_txs= {}
 
     # Sort all transactions by timestamp
     all_txns = sorted(algo_txns + voi_txns, key=lambda x: datetime.fromisoformat(x['timestamp']))
 
     # Process each transaction
     for tx in all_txns:
-        if tx['note'].startswith("aramid-confirm/v1:j"):
-            bridgedResponse = json.loads(tx['note'].removeprefix("aramid-confirm/v1:j"))
-            matched_txids_resp[bridgedResponse['sourceTxId']] = bridgedResponse
-            matching_txs[bridgedResponse['sourceTxId']] = tx
+        try:
+            if tx['note'].startswith("aramid-confirm/v1:j"):
+                bridgedResponse = json.loads(tx['note'].removeprefix("aramid-confirm/v1:j"))
+                sourceTxId = bridgedResponse['sourceTxId']
+                # print(bridgedResponse)
+                # print(bridgedResponse['sourceTxId'])
+                matched_txids_resp[sourceTxId] = bridgedResponse
+                matching_txs[sourceTxId] = tx
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
-        if not tx['note'].startswith("aramid-transfer/v1:j"):
-            continue  # Skip to the next item in the loop
-        trimmed_note = tx['note'].removeprefix("aramid-transfer/v1:j")
+    
+    # Process each transaction
+    for tx in all_txns:
+        try:
+            if not tx['note'].startswith("aramid-transfer/v1:j"):
+                continue  # Skip to the next item in the loop
+            trimmed_note = tx['note'].removeprefix("aramid-transfer/v1:j")
 
-        bridgeOrder = json.loads(trimmed_note)
+            bridgeOrder = json.loads(trimmed_note)
 
-        tx_time = datetime.fromisoformat(tx['timestamp'])
-        
-        # Look for matching transaction in the other chain
-        matching_tx = None
-        aramid_tx = None
-
-        # # Find matching transaction within time window
-        # for other_tx in all_txns:
-        #     if other_tx['txid'] in matched_txids:
-        #         continue
-        #     if other_tx['chain'] == tx['chain']:  # Must be from different chain
-        #         continue
-                
-        #     other_time = datetime.fromisoformat(other_tx['timestamp'])
-        #     time_diff = abs(other_time - tx_time)
+            tx_time = datetime.fromisoformat(tx['timestamp'])
             
-        #     if time_diff <= TIME_WINDOW:
-        #         matching_tx = other_tx
-        #         matched_txids.add(other_tx['txid'])
-                
-        #         # Look for corresponding Aramid transaction
-        #         for a_tx in aramid_txns:
-        #             a_time = datetime.fromisoformat(a_tx['timestamp'])
-        #             if min(tx_time, other_time) <= a_time <= max(tx_time, other_time):
-        #                 aramid_tx = a_tx
-        #                 break
-        #         break
-        matching_tx = matching_txs[tx['txid']]
-        if matching_tx:
-            # Determine source and destination based on timestamp
-            if tx_time < datetime.fromisoformat(matching_tx['timestamp']):
-                source_tx = tx
-                dest_tx = matching_tx
-            else:
-                source_tx = matching_tx
-                dest_tx = tx
+            # Look for matching transaction in the other chain
+            matching_tx = None
+            aramid_tx = None
 
-            bridge_ops.append({
-                "bridge_order": bridgeOrder,
-                "bridged_info": matched_txids_resp[tx['txid']],
-                'source_tx': source_tx,
-                'bridged_tx': matching_tx,
-                'note': tx['note'],
-                'dest_tx': dest_tx,
-                'aramid_tx': aramid_tx,
-                'status': 'Complete',
-                'time_taken': {
-                    'minutes': int(abs((datetime.fromisoformat(dest_tx['timestamp']) - 
-                                     datetime.fromisoformat(source_tx['timestamp'])).total_seconds()) // 60),
-                    'seconds': int(abs((datetime.fromisoformat(dest_tx['timestamp']) - 
-                                     datetime.fromisoformat(source_tx['timestamp'])).total_seconds()) % 60)
-                },
-                'formatted_time': format_timestamp(source_tx['timestamp'])
-            })
-        else:
-            bridge_ops.append({
-                "bridge_order": bridgeOrder,
-                "bridged_info": None,
-                'source_tx': tx,
-                'bridged_tx': None,
-                'note': tx['note'],
-                'dest_tx': None,
-                'aramid_tx': None,
-                'status': 'Pending',
-                'time_taken': None,
-                'formatted_time': format_timestamp(tx['timestamp'])
-            })
+            # # Find matching transaction within time window
+            # for other_tx in all_txns:
+            #     if other_tx['txid'] in matched_txids:
+            #         continue
+            #     if other_tx['chain'] == tx['chain']:  # Must be from different chain
+            #         continue
+                    
+            #     other_time = datetime.fromisoformat(other_tx['timestamp'])
+            #     time_diff = abs(other_time - tx_time)
+                
+            #     if time_diff <= TIME_WINDOW:
+            #         matching_tx = other_tx
+            #         matched_txids.add(other_tx['txid'])
+                    
+            #         # Look for corresponding Aramid transaction
+            #         for a_tx in aramid_txns:
+            #             a_time = datetime.fromisoformat(a_tx['timestamp'])
+            #             if min(tx_time, other_time) <= a_time <= max(tx_time, other_time):
+            #                 aramid_tx = a_tx
+            #                 break
+            #         break
+            
+            if tx['txid'] in matching_txs:
+                matching_tx = matching_txs[tx['txid']]
+                # Determine source and destination based on timestamp
+                if tx_time < datetime.fromisoformat(matching_tx['timestamp']):
+                    source_tx = tx
+                    dest_tx = matching_tx
+                else:
+                    source_tx = matching_tx
+                    dest_tx = tx
+
+                bridge_ops.append({
+                    "bridge_order": bridgeOrder,
+                    "bridged_info": matched_txids_resp[tx['txid']],
+                    'source_tx': source_tx,
+                    'bridged_tx': matching_tx,
+                    'note': tx['note'],
+                    'dest_tx': dest_tx,
+                    'aramid_tx': aramid_tx,
+                    'status': 'Complete',
+                    'time_taken': {
+                        'minutes': int(abs((datetime.fromisoformat(dest_tx['timestamp']) - 
+                                        datetime.fromisoformat(source_tx['timestamp'])).total_seconds()) // 60),
+                        'seconds': int(abs((datetime.fromisoformat(dest_tx['timestamp']) - 
+                                        datetime.fromisoformat(source_tx['timestamp'])).total_seconds()) % 60)
+                    },
+                    'formatted_time': format_timestamp(source_tx['timestamp'])
+                })
+            else:
+                bridge_ops.append({
+                    "bridge_order": bridgeOrder,
+                    "bridged_info": None,
+                    'source_tx': tx,
+                    'bridged_tx': None,
+                    'note': tx['note'],
+                    'dest_tx': None,
+                    'aramid_tx': None,
+                    'status': 'Pending',
+                    'time_taken': None,
+                    'formatted_time': format_timestamp(tx['timestamp'])
+                })
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
     return sorted(bridge_ops, key=lambda x: datetime.fromisoformat(x['source_tx']['timestamp']), reverse=True)
 

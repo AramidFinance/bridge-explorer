@@ -19,7 +19,7 @@
                 {% if op.dest_tx %}
                     {{ op.source_tx.chain }} → {{ op.dest_tx.chain }}
                 {% else %}
-                    {{ op.source_tx.chain }} → Pending
+                    {{ op.source_tx.chain }} → {{ op.bridge_order.destinationNetwork }} → Pending
                 {% endif %}
             </td>
             <td>
